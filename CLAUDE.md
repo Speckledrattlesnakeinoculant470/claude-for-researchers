@@ -48,6 +48,30 @@ who is a fluent programmer but has never used Claude Code.
 8. The dual-remote pattern (personal GitHub + institution GitLab, different identities)
    is common in academia and needs explicit setup.
 
+## Source project (for reference and examples)
+The guide was built from experience on a real research project. That project lives at:
+
+  /Users/mehregandoroudiani/Physics/Eisenstein L-values/
+
+It is a separate git repo (private physics research, NOT part of this public repo).
+When working on this guide, Claude can read files from that project using absolute
+paths if an example or pattern is needed. Key files there:
+- `CLAUDE.md` — a real, production CLAUDE.md (the full template in action)
+- `.claude/skills/` — the actual skills used during that project
+- `.claude/settings.json` — the actual hooks and permissions in use
+- `numerics/` — Python/mpmath computation scripts (usage examples for the guide)
+- `condensed.tex` — a real condensed reference document (~26 pp)
+- `next-session-prompts.md` — a real session log
+
+Do NOT copy content (formulas, physics results) from that project into this one.
+Use it only to check that the guide's advice matches what actually worked.
+
+## Git for this repo
+- Remote 'origin': https://github.com/Mexregkan/claude-for-researchers.git
+- Push: git push origin main
+- Commit author: Mehregan Doroudiani <287984940+mehregandoroudiani-ship-it@users.noreply.github.com>
+- No Co-Authored-By trailers.
+
 ## What NOT to include
 - Anything from the source physics project (content, formulas, results)
 - Personal email addresses or account names (use placeholders like YOUR_GITHUB_USER)
