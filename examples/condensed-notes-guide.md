@@ -106,7 +106,7 @@ date is useless. Treat syncing it as part of the cost of every new result.
 
 Bad (too much context, wrong level of detail):
 
-> In §7 of main.tex, after a lengthy computation involving the functional equation
+> In §7 of manuscript.tex, after a lengthy computation involving the functional equation
 > of ξ(s) applied three times and a symmetrization over the Weyl group, we found
 > that the residue of M_3 at the boundary hyperplane μ_0 = 1 equals...
 
@@ -116,5 +116,5 @@ Good (self-contained, exact, no derivation):
 > Res_{μ_0=1} M_3(μ_0, μ_1, μ_2, μ_3) = ½ Z(μ_1, μ_2, μ_3),
 > where Z is the Zagier triple product (eq. Zagier3eisen).
 > Analogously at all four boundary hyperplanes {μ_i = 1} and {μ_i = 0}.
-> Proved: Thm 1 = Thm 2 comparison, main.tex sec:boundaryStructure.
+> Proved: Thm 1 = Thm 2 comparison, manuscript.tex sec:boundaryStructure.
 > Status: ESTABLISHED.

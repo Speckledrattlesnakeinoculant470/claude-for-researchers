@@ -25,21 +25,21 @@ When in doubt, ask the user.
 
 ## Steps
 
-1. **Identify the change.** Ask the user what changed, or run `git diff main.tex`
+1. **Identify the change.** Ask the user what changed, or run `git diff manuscript.tex`
    to see recent edits.
 
 2. **Classify.** Apply the load-bearing filter above. If ambiguous, ask.
 
-3. **Locate the corresponding section in condensed.tex.** Grep for a related
-   label, theorem name, or keyword. Do NOT read condensed.tex in full.
+3. **Locate the corresponding section in brief.tex.** Grep for a related
+   label, theorem name, or keyword. Do NOT read brief.tex in full.
 
-4. **Make the targeted edit.** In condensed.tex:
+4. **Make the targeted edit.** In brief.tex:
    - Add the new theorem statement (without proof)
    - Replace the old formula with the corrected one
    - Update the "Status" line (ESTABLISHED / OPEN / CORRECTED)
    - Add a cross-reference to the main document section label
 
-5. **Compile condensed.tex** (use `/latex-compile condensed.tex`).
+5. **Compile brief.tex** (use `/latex-compile brief.tex`).
 
 6. **Report:**
    - What was propagated (which result, from which section)

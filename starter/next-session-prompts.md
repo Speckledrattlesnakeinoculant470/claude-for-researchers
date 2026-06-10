@@ -27,14 +27,14 @@ last result? Why is this the next thing to do?]
 **What to do:**
 [Precise instruction. Name the file, the section, the equation. Don't say
 "work on the residue calculation" — say "compute the residue of M_3 at
-mu_0 = 1 using eq (completeMaster) in sec:completeclosedform of main.tex,
-then update condensed.tex §11 to match."]
+mu_0 = 1 using eq (completeMaster) in sec:completeclosedform of manuscript.tex,
+then update brief.tex §11 to match."]
 
 **Success criterion:**
 [What does done look like? A number, a passing test, a compiled document,
 a specific sentence written?]
 
-**Files involved:** `main.tex`, `condensed.tex`, `numerics/script.py`
+**Files involved:** `manuscript.tex`, `brief.tex`, `numerics/script.py`
 
 ---
 
@@ -48,7 +48,7 @@ a specific sentence written?]
 <!-- Anything Claude should check at session start: venv path, model to use, etc. -->
 
 - Run scripts as: `numerics/venv/bin/python numerics/<script>.py`
-- Compile: `pdflatex -interaction=nonstopmode main.tex` (twice for TOC)
+- Compile: `pdflatex -interaction=nonstopmode manuscript.tex` (twice for TOC)
 - Check run log: `tail -f numerics/run.log`
 
 ---

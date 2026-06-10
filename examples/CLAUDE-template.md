@@ -20,9 +20,9 @@ domain as a function of their spectral parameters, using the Rankin–Selberg un
 <!-- Map of every file Claude needs to know about. One line each.
      Be explicit about which file is authoritative. -->
 
-- **condensed.tex** — short (20–30 pp) self-contained reference; READ FIRST in every new session.
+- **brief.tex** — short (20–30 pp) self-contained reference; READ FIRST in every new session.
   Contains current results, key formulas, open questions. No derivations.
-- **main.tex** — full paper draft (~N pp). Authoritative record; everything established in detail.
+- **manuscript.tex** — full paper draft (~N pp). Authoritative record; everything established in detail.
   Too large to read in full — grep or search by section label.
 - **next-session-prompts.md** — task log. Top section = next task; bottom = DONE log.
 - **numerics/** — computation scripts. `README.md` inside explains each file.
@@ -59,18 +59,18 @@ LaTeX belongs ONLY inside .tex files.
 ## Skills
 <!-- List skills defined in .claude/skills/ and when to invoke them. -->
 
-- `/latex-compile` — compile main.tex or condensed.tex, fix errors and overfull boxes.
+- `/latex-compile` — compile manuscript.tex or brief.tex, fix errors and overfull boxes.
   Use after any edit to a .tex file.
-- `/sync-condensed` — propagate load-bearing changes from main.tex to condensed.tex.
+- `/sync-condensed` — propagate load-bearing changes from manuscript.tex to brief.tex.
   Use after establishing a new result.
 - `/nb-to-wolfbook` — convert .nb notebooks or .m scripts to Wolfbook's .wb format.
   Use when migrating existing Mathematica files to work in VS Code with Wolfbook.
 
-## Writing style in main.tex (IMPORTANT)
+## Writing style in manuscript.tex (IMPORTANT)
 <!-- Tell Claude how detailed to be when writing in your main document.
      Researchers often want very different levels of detail than Claude's default. -->
 
-main.tex is the AUTHORITATIVE, COMPREHENSIVE record. Show every step of every
+manuscript.tex is the AUTHORITATIVE, COMPREHENSIVE record. Show every step of every
 calculation. State each substitution, each application of the functional equation,
 each sign. Never collapse multi-step manipulations into "one finds" or "a short
 computation gives." If in doubt, over-explain.
@@ -78,8 +78,8 @@ computation gives." If in doubt, over-explain.
 [Adapt this section to your own preference — some researchers want the opposite:
  terse, theorem-style prose. Be explicit either way.]
 
-## Structure and cross-references in main.tex (IMPORTANT)
-<!-- Claude navigates main.tex with grep and targeted reads, not by reading top to bottom.
+## Structure and cross-references in manuscript.tex (IMPORTANT)
+<!-- Claude navigates manuscript.tex with grep and targeted reads, not by reading top to bottom.
      These rules make that navigation reliable. -->
 
 - Use \label on every section, subsection, theorem, proposition, equation, and figure.
@@ -88,13 +88,13 @@ computation gives." If in doubt, over-explain.
 - Maintain a clear section hierarchy (sections → subsections → subsubsections with
   meaningful names). Flat structure makes targeted reads unreliable.
 
-## Corrections in main.tex (NON-NEGOTIABLE)
+## Corrections in manuscript.tex (NON-NEGOTIABLE)
 <!-- This rule prevents Claude from working from wrong information in future sessions. -->
 
-If something in main.tex is discovered to be wrong, REPLACE IT IN PLACE. Do not
+If something in manuscript.tex is discovered to be wrong, REPLACE IT IN PLACE. Do not
 append a correction paragraph later ("earlier I claimed X, but actually Y").
 
-Reason: Claude reads different parts of main.tex in each session. If the wrong
+Reason: Claude reads different parts of manuscript.tex in each session. If the wrong
 version stays in the file and the correction is only further down, Claude may read
 the wrong statement in a later session and never see the correction. It will then
 work from incorrect information, confidently.
@@ -121,7 +121,7 @@ this file — do not let the prior conversation influence the derivation.
 
 All plots, tables, and numerical outputs you produce go in `numerics/generated/`
 or `figures/generated/` until I have reviewed them and traced them to a committed
-script. Never include `generated/` content in main.tex without my explicit instruction.
+script. Never include `generated/` content in manuscript.tex without my explicit instruction.
 
 ## Numerics
 <!-- Primary computation engine, venv location, any gotchas. -->
@@ -145,4 +145,4 @@ script. Never include `generated/` content in main.tex without my explicit instr
 
 - `\Res` is defined as `\DeclareRobustCommand` (used in section titles → .toc)
 - Macros in use: [list your custom macros]
-- Compile: `pdflatex main.tex` twice (for TOC), or `latexmk -pdf`
+- Compile: `pdflatex manuscript.tex` twice (for TOC), or `latexmk -pdf`

@@ -41,7 +41,7 @@ This guide serves two audiences at once, so it is organised in parts:
 **[Part II: The core workflow](#part-ii-the-core-workflow)** — *the heart of the guide, for everyone*
 
 5. [CLAUDE.md: the most important file](#claudemd-the-most-important-file)
-6. [The dual-document pattern: main.tex and condensed.tex](#the-dual-document-pattern-maintex-and-condensedtex)
+6. [The dual-document pattern: manuscript.tex and brief.tex](#the-dual-document-pattern-manuscripttex-and-brieftex)
 7. [Session continuity: next-session-prompts.md](#session-continuity-next-session-promptsmd)
 8. [Session length and context limits](#session-length-and-context-limits)
 9. [Skills: reusable procedures](#skills-reusable-procedures)
@@ -242,9 +242,9 @@ running any shell commands. No permission prompts will appear.
 >    using `examples/CLAUDE-template.md` from that repo as the template.
 >    Fill in the Conventions, File map, and Current status sections from what I told you.
 > 5. Copy `next-session-prompts.md` from the starter package into the project root.
-> 6. If `main.tex` does not already exist, copy `starter/main.tex` from that repo
+> 6. If `manuscript.tex` does not already exist, copy `starter/manuscript.tex` from that repo
 >    as a stub. Do not overwrite an existing file.
-> 7. If `condensed.tex` does not already exist, copy `starter/condensed.tex` from
+> 7. If `brief.tex` does not already exist, copy `starter/brief.tex` from
 >    that repo as a stub. Do not overwrite an existing file.
 >    Update the title and author fields in both stubs with the project details I described.
 >
@@ -406,9 +406,9 @@ explaining what it is and what it is for. Explicitly say which file is authorita
 
 Example:
 ```
-- condensed.tex — 20-page self-contained reference; READ FIRST in every new session.
+- brief.tex — 20-page self-contained reference; READ FIRST in every new session.
   Contains all current results, key formulas, and open problems. No proofs.
-- main.tex — the full paper draft (~250 pages). Authoritative record; everything
+- manuscript.tex — the full paper draft (~250 pages). Authoritative record; everything
   established is here in full detail. Too large to read in full — grep or use section labels.
 - next-session-prompts.md — task log. Top = next task; bottom = DONE log.
 - numerics/ — computation scripts. numerics/README.md explains each file.
@@ -518,8 +518,8 @@ below for what skills are. A one-line description per skill is enough here.
 Example:
 ```
 ## Skills
-- /latex-compile — compile main.tex or condensed.tex, fix errors and overfull boxes.
-- /sync-condensed — propagate new results from main.tex to condensed.tex.
+- /latex-compile — compile manuscript.tex or brief.tex, fix errors and overfull boxes.
+- /sync-condensed — propagate new results from manuscript.tex to brief.tex.
 - /verify-residue — check a specific residue computation against the formula.
 ```
 
@@ -533,12 +533,12 @@ default is far too terse for most mathematical writing.
 
 Example (verbose style):
 ```
-## Writing style in main.tex (NON-NEGOTIABLE)
-main.tex is the authoritative, comprehensive record. Show every step of every
+## Writing style in manuscript.tex (NON-NEGOTIABLE)
+manuscript.tex is the authoritative, comprehensive record. Show every step of every
 calculation. State each substitution, each application of the functional equation,
 each sign and factor-of-two choice — explicitly, in its own sentence. Never collapse
 a multi-step manipulation into "one finds" or "a short computation gives." If in
-doubt, over-explain. A reader must be able to reconstruct every result from main.tex
+doubt, over-explain. A reader must be able to reconstruct every result from manuscript.tex
 alone, with no external notes and no gaps.
 ```
 
@@ -632,13 +632,13 @@ mean. It will often guess wrong in exactly the way that is hardest to catch — 
 plausible-looking sign or normalisation error.
 
 **Instructions given once and forgotten.** Things like "write math in plain Unicode
-in chat" or "show every step in main.tex" need to be in CLAUDE.md permanently, not
+in chat" or "show every step in manuscript.tex" need to be in CLAUDE.md permanently, not
 said once in conversation. Claude does not remember conversation instructions between
 sessions.
 
 ---
 
-## The dual-document pattern: main.tex and condensed.tex
+## The dual-document pattern: manuscript.tex and brief.tex
 
 ### The problem
 
@@ -658,7 +658,7 @@ solve it by making CLAUDE.md longer — a CLAUDE.md that attempts to summarise a
 
 Maintain two documents in parallel:
 
-**The main document** (`main.tex` or equivalent) is your full, authoritative record.
+**The main document** (`manuscript.tex` or equivalent) is your full, authoritative record.
 Everything established goes here in complete detail. Theorems with proofs.
 Derivations step by step. Numerical results with methods and validation. Corrections
 clearly stated. This document is verbose by design. It is written for a human reader
@@ -667,7 +667,7 @@ publication. Claude does not read this document in full each session — it is t
 Instead, Claude navigates it with `grep` and targeted reads when it needs a specific
 equation or section.
 
-**The condensed document** (`condensed.tex`, `notes.md`, or whatever name you choose)
+**The condensed document** (`brief.tex`, `notes.md`, or whatever name you choose)
 is a short (15–30 pages / 1000–3000 lines) self-contained reference. It contains
 the current state of the project: what is established, what the key formulas are,
 what is open, and where to find things in the main document. It contains no proofs,
@@ -697,9 +697,9 @@ The reason for this completeness is practical, not pedantic. A result you "know"
 but did not write down will be forgotten when the context rolls over. The main
 document is what survives.
 
-### Structuring main.tex so Claude can navigate it
+### Structuring manuscript.tex so Claude can navigate it
 
-Claude does not read `main.tex` from top to bottom each session. It navigates
+Claude does not read `manuscript.tex` from top to bottom each session. It navigates
 with `grep` and targeted reads, jumping to whatever section is relevant right now.
 Two things make this work or fail:
 
@@ -720,12 +720,12 @@ write them and save significant friction later.
 
 ### Corrections must replace, not append
 
-This is a non-negotiable rule: if you discover that something in `main.tex` is
+This is a non-negotiable rule: if you discover that something in `manuscript.tex` is
 wrong, **correct it in place**. Do not write a new paragraph further on saying
 "earlier I claimed X but actually Y." Delete or replace the wrong content.
 
 The reason is specific to how Claude uses the document. Claude reads different parts
-of `main.tex` in different sessions — it does not read everything. If the wrong
+of `manuscript.tex` in different sessions — it does not read everything. If the wrong
 version stays in the file and the correction is only a few pages later, there is a
 real risk that Claude reads the wrong statement in a future session and never
 encounters the correction. It will then work from incorrect information, confidently.
@@ -835,7 +835,7 @@ only the condensed document cannot understand what the project has established,
 it is not doing its job. Every result should be understandable without reference
 to the main document, even if the main document is where the proof lives.
 
-**Corrections in main.tex are appended rather than replaced.** This is the most
+**Corrections in manuscript.tex are appended rather than replaced.** This is the most
 dangerous mistake. If you write "earlier I said X, but actually Y" at the end of
 a section, a later Claude session may read only the beginning of that section and
 work from X, never seeing the correction. Wrong content must be replaced in place,
@@ -923,7 +923,7 @@ Every completed task gets a brief entry at the bottom of the file:
 ```
 ### 2026-06-04 — Interior residue R_σ: n_-=1 check
 Result: Ratio 1.0003 at three tuples (4,2,2,2), (5,2,2,3), (6,2,2,4).
-Files changed: numerics/residue_general.py, main.tex sec:numStrategy:ansatzCheck
+Files changed: numerics/residue_general.py, manuscript.tex sec:numStrategy:ansatzCheck
 Notes: n_-=1 residue validated; other 15 hyperplanes follow by G_3 symmetry.
 ```
 
@@ -958,7 +958,7 @@ the session, but not the full detail. Nuanced reasoning, exploratory back-and-fo
 and intermediate steps that were never written anywhere else are compressed or
 dropped. For software work this is usually fine. For research, it can matter: if
 you worked through a subtle argument in conversation and never wrote it into
-`main.tex`, compaction may reduce it to a one-line summary and lose the subtlety.
+`manuscript.tex`, compaction may reduce it to a one-line summary and lose the subtlety.
 The practical implication: write important results and reasoning into your documents
 *before* the session gets long, not after.
 
@@ -1012,14 +1012,14 @@ you maintain, without carrying the noise of the previous one.
 
 ### Why the workflow in this guide is designed around this
 
-Most of what this guide recommends — `main.tex`, `condensed.tex`, and
+Most of what this guide recommends — `manuscript.tex`, `brief.tex`, and
 `next-session-prompts.md` — exists specifically to make closing a session
 painless.
 
-`main.tex` is the permanent record. Closing a session does not lose work, because
+`manuscript.tex` is the permanent record. Closing a session does not lose work, because
 everything established is already written down in full.
 
-`condensed.tex` is the orientation document. A new session reads it first and
+`brief.tex` is the orientation document. A new session reads it first and
 reaches working context in minutes, not in a long re-explanation. Without it, you
 would either keep sessions open too long to avoid re-orienting Claude, or spend
 the first 20 minutes of every session catching Claude up.
@@ -1027,7 +1027,7 @@ the first 20 minutes of every session catching Claude up.
 `next-session-prompts.md` captures the in-flight state: what you were in the
 middle of, why a particular approach failed, what the immediate next step is.
 This is the context that does not fit anywhere else — too specific and temporary
-for `condensed.tex`, too detailed for CLAUDE.md.
+for `brief.tex`, too detailed for CLAUDE.md.
 
 Together, they mean that ending a session and starting a new one is a deliberate
 tool, not a loss. Use it.
@@ -1054,7 +1054,7 @@ specific procedures you want to run on demand.
 ### Why skills are useful
 
 Without skills, you find yourself typing the same instructions over and over:
-"Compile main.tex, fix any errors, tell me the page count and any overfull boxes."
+"Compile manuscript.tex, fix any errors, tell me the page count and any overfull boxes."
 With a skill, you type `/latex-compile` and Claude does exactly that procedure,
 exactly the same way, every time.
 
@@ -1095,7 +1095,7 @@ Precise conditions: what state should the files be in, what is the input,
 what triggers you to run this rather than something else.
 
 ## Input
-What arguments the user can pass: /skill-name condensed.tex, or /skill-name §3, etc.
+What arguments the user can pass: /skill-name brief.tex, or /skill-name §3, etc.
 
 ## Steps
 1. Concrete step.
@@ -1163,7 +1163,7 @@ Compile a LaTeX document, fix errors and overfull hboxes, and report the result.
 After any edit to a .tex file. Also invoke before committing.
 
 ## Input
-The user may specify a file: `/latex-compile condensed.tex`. Default: main.tex.
+The user may specify a file: `/latex-compile brief.tex`. Default: manuscript.tex.
 
 ## Steps
 
@@ -1380,7 +1380,7 @@ Add this to your CLAUDE.md:
 ## AI-generated outputs
 All plots, tables, and numerical outputs Claude produces go in numerics/generated/
 or figures/generated/ until I have reviewed them and traced them to a committed
-script. Never include generated/ outputs in main.tex without my explicit instruction.
+script. Never include generated/ outputs in manuscript.tex without my explicit instruction.
 ```
 
 ---
@@ -1788,8 +1788,8 @@ project root. It gives you everything you need in the right place, ready to fill
 starter/
 ├── CLAUDE.md                        ← fill in your project details
 ├── next-session-prompts.md          ← session continuity log
-├── main.tex                         ← LaTeX stub (overwrite with your own if you have one)
-├── condensed.tex                    ← condensed notes stub (overwrite if you have one)
+├── manuscript.tex                         ← LaTeX stub (overwrite with your own if you have one)
+├── brief.tex                    ← condensed notes stub (overwrite if you have one)
 └── .claude/
     ├── settings.json                ← permissions + hooks
     ├── hooks/
@@ -1816,8 +1816,8 @@ in Part I.
 |------|------------|
 | [`starter/CLAUDE.md`](starter/CLAUDE.md) | Starting CLAUDE.md for any research project, with all sections and explanatory comments |
 | [`starter/next-session-prompts.md`](starter/next-session-prompts.md) | Session log template with format examples |
-| [`starter/main.tex`](starter/main.tex) | Minimal working LaTeX stub: preamble, theorem environments, skeleton sections — fill in or overwrite with your own |
-| [`starter/condensed.tex`](starter/condensed.tex) | Condensed notes stub with status tags (ESTABLISHED/CONJECTURED/OPEN) and cross-reference structure — fill in as results accumulate |
+| [`starter/manuscript.tex`](starter/manuscript.tex) | Minimal working LaTeX stub: preamble, theorem environments, skeleton sections — fill in or overwrite with your own |
+| [`starter/brief.tex`](starter/brief.tex) | Condensed notes stub with status tags (ESTABLISHED/CONJECTURED/OPEN) and cross-reference structure — fill in as results accumulate |
 | [`starter/.claude/settings.json`](starter/.claude/settings.json) | Annotated generic settings: permissions for research tools + hooks for pre-compact, dual-remote push, and promise-checker |
 | [`starter/.claude/hooks/pre-compact.sh`](starter/.claude/hooks/pre-compact.sh) | Pre-compact hook: timestamps CLAUDE.md and snapshots the task log before context compression |
 | [`starter/.claude/skills/latex-compile.md`](starter/.claude/skills/latex-compile.md) | Skill: compile LaTeX, fix common errors, report result |

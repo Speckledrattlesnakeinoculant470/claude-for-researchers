@@ -6,7 +6,7 @@ Compile a LaTeX document, fix errors and overfull hboxes, and report the result.
 After any edit to a .tex file. Also invoke before committing.
 
 ## Input
-The user may specify a file: `/latex-compile condensed.tex`. Default: `main.tex`.
+The user may specify a file: `/latex-compile brief.tex`. Default: `manuscript.tex`.
 
 ## Steps
 

@@ -32,7 +32,7 @@ or physical claim.
 **Step 2 — Check it independently.**
 Derive or verify the claim from scratch, using only:
 - The definitions and conventions stated in CLAUDE.md
-- The content of condensed.tex or main.tex (the authoritative documents)
+- The content of brief.tex or manuscript.tex (the authoritative documents)
 - First principles
 
 Do NOT use the prior conversation as evidence. Do not let the earlier exchange
@@ -50,7 +50,7 @@ say so explicitly and explain why.
 Always name which answer you are standing behind at the end of the report.
 
 **Step 4 — If the original was right, correct the record.**
-If any file was edited based on the incorrect revision (e.g., a sign in main.tex
+If any file was edited based on the incorrect revision (e.g., a sign in manuscript.tex
 was changed), fix it back now. State which files were corrected.
 
 ## When to run this without being asked

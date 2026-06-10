@@ -1,12 +1,12 @@
-% condensed.tex — short self-contained reference (target: 15–30 pages)
+% brief.tex — short self-contained reference (target: 15–30 pages)
 %
 % USAGE BY CLAUDE:
 %   - READ THIS FIRST at the start of every new session.
 %   - This file contains the current state of the project: established results,
 %     key formulas, open problems, conventions. No proofs, no derivations.
-%   - Cross-references to main.tex are provided so you can navigate there when
+%   - Cross-references to manuscript.tex are provided so you can navigate there when
 %     you need the derivation.
-%   - Update this file whenever main.tex gets a new result, corrected formula,
+%   - Update this file whenever manuscript.tex gets a new result, corrected formula,
 %     or status change. Use /sync-condensed to propagate load-bearing changes.
 %   - Status tags: [ESTABLISHED], [CONJECTURED], [OPEN]
 %
@@ -39,7 +39,7 @@
 \newtheorem{remark}[theorem]{Remark}
 
 % -----------------------------------------------------------------------
-% CUSTOM COMMANDS — keep in sync with main.tex and CLAUDE.md
+% CUSTOM COMMANDS — keep in sync with manuscript.tex and CLAUDE.md
 % -----------------------------------------------------------------------
 % \newcommand{\examplecommand}[1]{\mathcal{#1}}
 
@@ -65,7 +65,7 @@
 % Two or three key theorems stated precisely.
 % Someone reading only this section should know what the project has established.
 
-\begin{theorem}[\established, see main.tex \S\ref{...}]
+\begin{theorem}[\established, see manuscript.tex \S\ref{...}]
 [Statement of main result.]
 \end{theorem}
 
@@ -93,10 +93,10 @@ there are multiple in the literature.]
 % -----------------------------------------------------------------------
 
 % One section per topic. Theorem statement only, no proof.
-% Cross-reference main.tex for the derivation.
+% Cross-reference manuscript.tex for the derivation.
 % Tag each result: [ESTABLISHED], [CONJECTURED], or [OPEN].
 
-\begin{proposition}[\established, main.tex \S\ref{...}]
+\begin{proposition}[\established, manuscript.tex \S\ref{...}]
 [Statement.]
 \end{proposition}
 
