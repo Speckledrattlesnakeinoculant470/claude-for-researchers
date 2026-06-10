@@ -238,17 +238,23 @@ description:
 > 4. Create `.claude/skills/` with the `latex-compile`, `sync-condensed`,
 >    `nb-to-wolfbook`, `verify-citation`, `reality-check`, and `cross-validate` skills
 >    (all in the starter package).
-> 5. Install rtk if not already installed (`brew install rtk && rtk init -g --auto-patch`).
-> 6. Install the Anthropic pdf skill:
+> 5. Copy `next-session-prompts.md` from the starter package into the project root.
+> 6. If `main.tex` does not already exist, copy `starter/main.tex` from that repo
+>    as a starting stub — do not overwrite an existing file.
+> 7. If `condensed.tex` does not already exist, copy `starter/condensed.tex` from
+>    that repo as a starting stub — do not overwrite an existing file.
+> 8. Install rtk if not already installed (`brew install rtk && rtk init -g --auto-patch`).
+> 9. Install the Anthropic pdf skill:
 >    ```
 >    curl -o .claude/skills/pdf.md \
 >      https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/SKILL.md
 >    ```
-> 7. Install the Wolfbook VS Code extension (`code --install-extension wolfbook.wolfbook`).
-> 8. Initialise a git repo if one does not exist.
+> 10. Install the Wolfbook VS Code extension (`code --install-extension wolfbook.wolfbook`).
+> 11. Initialise a git repo if one does not exist.
 >
 > Fill in `CLAUDE.md`'s Conventions, File map, and Current status sections from what
-> I told you about the project.
+> I told you about the project. Also update the title and author fields in `main.tex`
+> and `condensed.tex` with the project details I described.
 
 Claude will read the guide, download the starter files, install the tools, create
 the directory structure, and write a CLAUDE.md populated with your project's details.
@@ -1763,6 +1769,8 @@ project root. It gives you everything you need in the right place, ready to fill
 starter/
 ├── CLAUDE.md                        ← fill in your project details
 ├── next-session-prompts.md          ← session continuity log
+├── main.tex                         ← LaTeX stub (overwrite with your own if you have one)
+├── condensed.tex                    ← condensed notes stub (overwrite if you have one)
 └── .claude/
     ├── settings.json                ← permissions + hooks
     ├── hooks/
@@ -1789,6 +1797,8 @@ in Part I.
 |------|------------|
 | [`starter/CLAUDE.md`](starter/CLAUDE.md) | Starting CLAUDE.md for any research project, with all sections and explanatory comments |
 | [`starter/next-session-prompts.md`](starter/next-session-prompts.md) | Session log template with format examples |
+| [`starter/main.tex`](starter/main.tex) | Minimal working LaTeX stub: preamble, theorem environments, skeleton sections — fill in or overwrite with your own |
+| [`starter/condensed.tex`](starter/condensed.tex) | Condensed notes stub with status tags (ESTABLISHED/CONJECTURED/OPEN) and cross-reference structure — fill in as results accumulate |
 | [`starter/.claude/settings.json`](starter/.claude/settings.json) | Annotated generic settings: permissions for research tools + hooks for pre-compact, dual-remote push, and promise-checker |
 | [`starter/.claude/hooks/pre-compact.sh`](starter/.claude/hooks/pre-compact.sh) | Pre-compact hook: timestamps CLAUDE.md and snapshots the task log before context compression |
 | [`starter/.claude/skills/latex-compile.md`](starter/.claude/skills/latex-compile.md) | Skill: compile LaTeX, fix common errors, report result |
