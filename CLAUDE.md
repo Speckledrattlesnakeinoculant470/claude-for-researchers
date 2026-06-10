@@ -67,10 +67,21 @@ Do NOT copy content (formulas, physics results) from that project into this one.
 Use it only to check that the guide's advice matches what actually worked.
 
 ## Git for this repo
-- Remote 'origin': https://github.com/Mexregkan/claude-for-researchers.git
-- Push: git push origin main
+- Repo location: `/Users/mehregandoroudiani/Physics/AI for physics/claude-for-researchers`
+- Remote 'origin': https://github.com/Mexregkan/claude-for-researchers.git (public)
+- Remote 'private': a private GitHub/GitLab repo for backing up personal branches (set up separately — see below)
+- Push public work: `git push origin main`
+- Push private branch for backup: `git push private <branch-name>`
 - Commit author: Mehregan Doroudiani <287984940+mehregandoroudiani-ship-it@users.noreply.github.com>
 - No Co-Authored-By trailers.
+
+## Private remote setup
+To add the private remote once you've created the private repo:
+```
+git remote add private <YOUR_PRIVATE_REPO_URL>
+```
+Personal/experimental branches are never pushed to `origin` until ready to make public.
+Only `main` (and branches explicitly chosen) go to `origin`.
 
 ## What NOT to include
 - Anything from the source physics project (content, formulas, results)
