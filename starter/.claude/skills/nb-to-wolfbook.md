@@ -19,14 +19,14 @@ Wolfbook .wb files are plain-text JSON following VS Code's Notebook API. The str
  "cells": [
   {
    "kind": 2,
-   "language": "wolfram",
+   "languageId": "wolfram",
    "value": "f[x_] := x^2",
    "metadata": {},
    "outputs": []
   },
   {
    "kind": 1,
-   "language": "markdown",
+   "languageId": "markdown",
    "value": "# Section heading or prose note",
    "metadata": {},
    "outputs": []
@@ -44,6 +44,11 @@ Wolfbook .wb files are plain-text JSON following VS Code's Notebook API. The str
 
 Rules:
 - `kind: 2` = Wolfram code cell; `kind: 1` = Markdown text cell
+- `languageId` (NOT `language`) is REQUIRED on every cell — VS Code builds each cell
+  as a `vscode.NotebookCellData` and rejects the file with "NotebookCellData MUST have
+  'languageId' property" if it is missing. Use `"wolfram"` for code, `"markdown"` for
+  text. (The Wolfbook serializer passes the parsed JSON straight through to VS Code,
+  so the on-disk keys must match `vscode.NotebookData`/`NotebookCellData` exactly.)
 - Use exactly 1-space indentation throughout
 - `value` must be a valid JSON string: `\` → `\\`, `"` → `\"`, newlines → `\n`
 - `outputs: []` for all cells — outputs are not preserved, user will re-run
