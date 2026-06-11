@@ -66,6 +66,8 @@ LaTeX belongs ONLY inside .tex files.
   Use after establishing a new result.
 - `/nb-to-wolfbook` — convert .nb notebooks or .m scripts to Wolfbook's .wb format.
   Use when migrating existing Mathematica files to work in VS Code with Wolfbook.
+- `/overleaf-sync` — sync the `Overleaf/` git clone of a shared paper: status/pull/diff/publish.
+  Only if you collaborate on Overleaf via its git remote. Remove this line otherwise.
 
 ## Writing style in workbook.tex (IMPORTANT)
 <!-- Tell Claude how detailed to be when writing in your main document.

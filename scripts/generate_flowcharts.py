@@ -93,13 +93,13 @@ def chart_setup():
     nd(g, 'cla',    'Write CLAUDE.md\n'
                     'goal · file map · conventions · git config\n'
                     'current status · open tasks · skills list',  S_PROC)
-    nd(g, 'cond',   'Write brief.tex (condensed reference)\n'
+    nd(g, 'cond',   'Write brief.tex (short reference)\n'
                     'established results only · no proofs\n'
                     '15–30 pages · read first every session',      S_PROC)
     nd(g, 'nsp',    'Write next-session-prompts.md\n'
                     'first task at top · DONE log at bottom',      S_PROC)
     nd(g, 'sett',   'Configure .claude/settings.json\n'
-                    'allow routine commands · deny destructive\n'
+                    'allow routine · ask before risky · deny destructive\n'
                     'add pre-compact hook · test in terminal first', S_PROC)
     nd(g, 'ddual',  'Dual\nremotes?',                              S_DEC)
     nd(g, 'dual',   'Add GitHub + GitLab remotes\n'

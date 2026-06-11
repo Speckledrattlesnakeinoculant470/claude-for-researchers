@@ -240,7 +240,8 @@ soften it.
 > - `.claude/settings.json` (from `starter/.claude/settings.json`)
 > - `.claude/hooks/pre-compact.sh` and `.claude/hooks/promise-checker.sh`
 > - `.claude/skills/`: `latex-compile`, `sync-condensed`, `nb-to-wolfbook`,
->   `verify-citation`, `reality-check`, `cross-validate`
+>   `verify-citation`, `reality-check`, `cross-validate`, `overleaf-sync`
+> - `.gitignore` (from `starter/.gitignore`)
 >
 > **Generate these from what I told you at the start of this session.** All four
 > files below must be customised to THIS project. Use the starter files ONLY for
@@ -295,13 +296,14 @@ convert everything to Wolfbook's `.wb` format in one step — re-run the cells
 afterwards to regenerate output.
 
 **Why the install commands prompt (once).** The `settings.json` Claude just wrote
-allows every shell command except a denylist of destructive ones — `rm -rf`,
-`git reset --hard`, force-push, and so on. That is the behaviour you want: Claude
-runs LaTeX, Python, and git without interrupting you, and only pauses before
-something dangerous. But Claude Code reads `settings.json` once, at session start,
-so it does not take effect until your *next* session. That is why the four install
-commands in this very first session ask for permission. Approve them; from the
-next session on, nothing routine will prompt you again.
+allows ordinary commands to run freely, asks before recoverable-but-risky ones
+(`rm`, `mv`, `git reset --hard`, …), and denies the catastrophic ones outright
+(`sudo`, `mkfs`, …). That is the behaviour you want: Claude runs LaTeX, Python, and
+git without interrupting you, and only pauses before something risky. But Claude
+Code reads `settings.json` once, at session start, so it does not take effect until
+your *next* session. That is why the four install commands in this very first
+session ask for permission. Approve them; from the next session on, routine
+commands won't prompt you again.
 
 This works because Claude Code can read a GitHub repository, run shell commands, and
 write files, and because the guide it is reading contains explicit templates and
@@ -391,7 +393,7 @@ first message and one that wastes half an hour on orientation.
 
 ### Why it is the most important file
 
-Every other practice in this guide — the condensed notes, the session log, the
+Every other practice in this guide — `brief.tex`, the session log, the
 skills — feeds into the session through CLAUDE.md. If CLAUDE.md is wrong, incomplete,
 or out of date, every session will be off. No amount of clever tooling fixes a bad
 CLAUDE.md.
@@ -546,9 +548,9 @@ Example:
 
 ---
 
-#### 8. Writing style for your main document
+#### 8. Writing style for your workbook.tex
 
-If Claude is helping you write or edit your main document, tell it explicitly what
+If Claude is helping you write or edit your workbook.tex, tell it explicitly what
 level of detail you expect. Researchers have very different preferences, and Claude's
 default is far too terse for most mathematical writing.
 
@@ -607,8 +609,8 @@ blocks accumulate, CLAUDE.md grows, Claude reads old states as if they were curr
 and sessions degrade.
 
 **Not a full exposition.** CLAUDE.md should be navigable in one or two screenfuls
-per section. Detailed content belongs in your condensed notes document (see below).
-CLAUDE.md points Claude to the condensed notes; it does not replace them.
+per section. Detailed content belongs in your brief.tex (see below).
+CLAUDE.md points Claude to brief.tex; it does not replace it.
 
 **Not speculative or in-progress work.** Only write what is established. In-progress
 calculations belong in `next-session-prompts.md`. A CLAUDE.md that says something is
@@ -639,7 +641,7 @@ see exactly when a compaction happened and use `next-session-prompts.md` to re-o
 ### Common CLAUDE.md mistakes
 
 **Too long.** If CLAUDE.md is more than 5–6 screenfuls, Claude spends too much
-context on it. Move detailed exposition to the condensed notes document. Keep CLAUDE.md
+context on it. Move detailed exposition to brief.tex. Keep CLAUDE.md
 as a navigation index and current-status snapshot.
 
 **Not updated.** A CLAUDE.md that has not been updated for a week is misleading.
@@ -665,7 +667,7 @@ sessions.
 
 Mathematical and physics research projects involve long documents. A paper draft,
 after a few months of work, might be 150 to 300 pages. Claude Code has a finite
-context window. When your main document exceeds what fits in context, something
+context window. When your workbook.tex exceeds what fits in context, something
 breaks: Claude can no longer read the whole document, and sessions begin to
 degrade — Claude forgets earlier results, contradicts itself, misses constraints
 that were established weeks ago.
@@ -682,27 +684,26 @@ Maintain two documents in parallel:
 **The workbook** (`workbook.tex`) is your full, detailed working record — a research
 journal in LaTeX. Everything goes here: proofs, derivations, failed attempts,
 discussions, corrections, numerical experiments, and your thinking as it develops.
-This document is deliberately verbose. It is not a paper draft; it is the place where
-you work things out in writing. It is written for a human reader
-who wants to understand everything, and it is the record you would submit for
-publication. Claude does not read this document in full each session — it is too long.
-Instead, Claude navigates it with `grep` and targeted reads when it needs a specific
-equation or section.
+This document is deliberately verbose. It is **not** a paper draft and **not** what
+you submit for publication — it is the place where you work things out in writing,
+for a reader (you, months later, or Claude) who wants to see every step. Claude does
+not read it in full each session — it is too long. Instead, Claude navigates it with
+`grep` and targeted reads when it needs a specific equation or section.
 
-**The condensed document** (`brief.tex`, `notes.md`, or whatever name you choose)
-is a short (15–30 pages / 1000–3000 lines) self-contained reference. It contains
-the current state of the project: what is established, what the key formulas are,
-what is open, and where to find things in the main document. It contains no proofs,
-no derivations, no history. Claude reads this document at the start of new sessions
-as the primary orientation source.
+**The brief** (`brief.tex`) is a short (15–30 pages / 1000–3000 lines)
+self-contained reference. It contains the current state of the project: what is
+established, what the key formulas are, what is open, and where to find things in
+`workbook.tex`. It contains no proofs, no derivations, no history. Claude reads it
+at the start of new sessions as the primary orientation source. Because it states
+results cleanly without the working-out, `brief.tex` — not `workbook.tex` — is the
+document closest to an eventual published paper.
 
-The condensed document acts as a compressed session memory. When the main document
-has grown beyond what fits in context, Claude reads the condensed version and stays
-accurately oriented.
+`brief.tex` acts as a compressed session memory. When `workbook.tex` has grown
+beyond what fits in context, Claude reads `brief.tex` and stays accurately oriented.
 
-### What to put in the main document
+### What to put in workbook.tex
 
-Everything. The main document is the authoritative record, and "authoritative"
+Everything. `workbook.tex` is the authoritative record, and "authoritative"
 means complete. There are no results too numerical or too routine to include in full.
 If a calculation was worth doing, it is worth recording in full detail.
 
@@ -755,15 +756,15 @@ encounters the correction. It will then work from incorrect information, confide
 In-place corrections also produce a cleaner document for human readers. There is
 no legitimate reason to keep wrong content in an authoritative record.
 
-### What to put in the condensed document
+### What to put in brief.tex
 
-Only what is established and currently relevant. The condensed document is a snapshot
+Only what is established and currently relevant. The brief.tex is a snapshot
 of the current state of knowledge about the project, compressed to what is essential.
 
 **Include:**
 - Every established theorem and proposition, stated precisely (without proof)
 - Every key formula, with the exact normalizations and signs you use
-- A cross-reference to the main document for each result (section label or equation name)
+- A cross-reference to workbook.tex for each result (section label or equation name)
   so Claude can navigate there when it needs the derivation
 - The current status: what is proved, what is conjectured, what is open
 - Open problems, ranked by importance
@@ -777,7 +778,7 @@ of the current state of knowledge about the project, compressed to what is essen
 - In-progress or speculative work
 - Anything that is not yet established
 
-### How to structure the condensed document
+### How to structure brief.tex
 
 A structure that works well:
 
@@ -792,7 +793,7 @@ A structure that works well:
 
 §3–N  Results by topic
     One section per topic. Theorem statement, key formula,
-    cross-reference to main document.
+    cross-reference to workbook.tex.
     Mark each result: ESTABLISHED / CONJECTURED / OPEN.
 
 §N+1  Numerical results
@@ -804,26 +805,26 @@ A structure that works well:
 
 ### The sync discipline
 
-The condensed document and the main document will drift apart unless you actively
+The brief.tex and workbook.tex will drift apart unless you actively
 maintain them. Two situations require a sync:
 
 **After a new result is established:** Add the theorem statement (not the proof) to
-the condensed document. Update the status of related open problems. This takes five
-minutes and saves the result from being lost in the main document.
+the brief.tex. Update the status of related open problems. This takes five
+minutes and saves the result from being lost in workbook.tex.
 
-**After a correction:** If you find that something in the condensed document is wrong,
-fix it immediately. A wrong condensed document is worse than no condensed document —
+**After a correction:** If you find that something in brief.tex is wrong,
+fix it immediately. A wrong brief.tex is worse than no brief.tex —
 Claude will confidently work from incorrect information.
 
 The `/sync-condensed` skill in this repository automates part of this: it classifies
-which changes in the main document are "load-bearing" (new theorems, corrected formulas)
+which changes in workbook.tex are "load-bearing" (new theorems, corrected formulas)
 and prompts you to propagate them.
 
 ### What "load-bearing" means
 
-Not every change to the main document needs to go into the condensed document.
+Not every change to workbook.tex needs to go into brief.tex.
 
-**Propagate to condensed:**
+**Propagate to brief.tex:**
 - A new theorem or proposition (statement only)
 - A corrected formula (sign, factor, argument — whatever changed)
 - A result that changes the status of an open problem
@@ -840,22 +841,22 @@ recover a missing one.
 
 ### Common mistakes with the dual-document pattern
 
-**The condensed document grows.** When it exceeds 30 pages, it starts to function
-like a smaller version of the main document — still too large for an orienting read.
+**The brief.tex grows.** When it exceeds 30 pages, it starts to function
+like a smaller version of workbook.tex — still too large for an orienting read.
 Prune it: collapse routine results into tables, remove historical context, cut anything
 that is not load-bearing for future work.
 
-**In-progress work ends up in the condensed document.** The condensed document
-contains what is established. When you are in the middle of a calculation, that
-belongs in `next-session-prompts.md`, not in the condensed document.
+**In-progress work ends up in brief.tex.** `brief.tex`
+contains only what is established. When you are in the middle of a calculation, that
+belongs in `next-session-prompts.md`, not in brief.tex.
 
-**Syncing stops.** A condensed document that is two months out of date is useless.
+**Syncing stops.** A brief.tex that is two months out of date is useless.
 Treat syncing as part of the cost of every new result, not as a separate task.
 
-**The condensed document is not self-contained.** If someone (or Claude) reading
-only the condensed document cannot understand what the project has established,
+**The brief.tex is not self-contained.** If someone (or Claude) reading
+only brief.tex cannot understand what the project has established,
 it is not doing its job. Every result should be understandable without reference
-to the main document, even if the main document is where the proof lives.
+to workbook.tex, even if workbook.tex is where the proof lives.
 
 **Corrections in workbook.tex are appended rather than replaced.** This is the most
 dangerous mistake. If you write "earlier I said X, but actually Y" at the end of
@@ -869,7 +870,7 @@ not annotated. See the section above on corrections.
 
 ### The problem
 
-Even with a well-maintained CLAUDE.md and condensed notes document, there is
+Even with a well-maintained CLAUDE.md and brief.tex, there is
 context that lives only in the conversation — the details of what you just tried,
 why a particular approach failed, what the next micro-step is. This context does
 not survive between sessions. A new session starts without it.
@@ -1028,7 +1029,7 @@ eventually degrade.
 
 A useful heuristic: close the session when a natural unit of work is complete.
 Not mid-derivation, not mid-debugging — but when you have reached a result you
-can state cleanly, committed it to the main document, and updated the task log.
+can state cleanly, committed it to workbook.tex, and updated the task log.
 That is a natural seam. The next session starts fresh, oriented by the documents
 you maintain, without carrying the noise of the previous one.
 
@@ -1086,8 +1087,8 @@ For research, the most valuable skills are:
 report in a standard format. Without a skill, you either write these instructions
 every time or get inconsistent behavior.
 
-**Sync skills** — propagate changes between related documents (e.g., from your
-full paper to your condensed notes). The criteria for what to propagate are subtle;
+**Sync skills** — propagate changes between related documents (e.g., from
+workbook.tex to brief.tex). The criteria for what to propagate are subtle;
 writing them once in a skill ensures consistent judgment across sessions.
 
 **Verification skills** — run a specific check against current results. For
@@ -1096,7 +1097,7 @@ residue at a specific point." Writing the check protocol in a skill means Claude
 always checks the right things in the right order.
 
 **Writing skills** — draft a new section in your house style (verbose, step-by-step,
-with explicit justifications) and append it to the main document. If you always want
+with explicit justifications) and append it to workbook.tex. If you always want
 sections to have the same structure and level of detail, a skill enforces that.
 
 ### How to write a skill
@@ -1252,6 +1253,73 @@ to both remotes, and the PostToolUse hook in the starter settings fires it
 automatically after every push to GitHub. You can also ask Claude to keep an
 experimental branch on only one remote until you are ready to publish it — just
 tell it which remote to use.
+
+### Working with a shared Overleaf project (git clone)
+
+Most collaborative papers live on Overleaf, but Claude Code cannot see an Overleaf
+project directly. The fix is that Overleaf exposes every project as a **git remote**
+(Overleaf menu → Sync → Git — a paid feature). You clone the shared project into a
+subfolder of your repo, and from then on Claude can read it, diff it, and help you
+prepare edits — while a few deliberate safety rails make it impossible to clobber
+your collaborators' work by accident.
+
+This is the single highest-value integration for a working physicist: the group's
+authoritative paper becomes a file Claude can grep, cross-reference against your
+`workbook.tex`, and check for consistency — without leaving the editor.
+
+**The model.** The shared project is cloned into `Overleaf/`, which is its *own*
+git repo (separate from your project's repo), with two branches:
+
+- `master` — a pristine mirror of Overleaf. Only ever updated by `git pull`. You never edit it.
+- `local-edits` — where you make offline changes.
+
+Three safety rails keep the shared paper safe:
+
+1. **Push is physically disabled.** The clone's push URL is set to `no_push`, so
+   `git push` simply fails. Clone, fetch, and pull only *read* from Overleaf; only
+   push writes. Publishing requires deliberately, temporarily re-enabling push.
+2. **`Overleaf/` is git-ignored** in your own repo, so the group's paper never gets
+   pushed to your personal GitHub or GitLab. (The starter [`.gitignore`](starter/.gitignore)
+   already lists it.)
+3. **A merge-only publish path.** When you do publish, the workflow pulls
+   collaborators' latest first and merges — it never force-pushes and never
+   auto-resolves conflicts.
+
+**One-time setup** (run once, from your project root; replace the placeholders):
+
+```bash
+# 1. Store the Overleaf git token so pulls are non-interactive (username is 'git'):
+printf "protocol=https\nhost=git.overleaf.com\nusername=git\npassword=<token>\n\n" \
+  | git credential approve
+
+# 2. Clone the shared project into Overleaf/ (its own repo, NOT a submodule):
+git clone https://git@git.overleaf.com/<project-id> Overleaf
+
+# 3. Create the editing branch and disable accidental pushes:
+git -C Overleaf branch local-edits
+git -C Overleaf remote set-url --push origin no_push
+
+# 4. Keep the shared paper out of your personal repo:
+echo "/Overleaf/" >> .gitignore
+```
+
+You find `<project-id>` and the `<token>` under Overleaf's *Git* sync menu. Store
+the token in your OS keychain via `git credential approve` as shown — never put it
+in a URL or commit it.
+
+**Day-to-day use.** The [`overleaf-sync`](starter/.claude/skills/overleaf-sync.md)
+skill wraps the whole workflow:
+
+- `/overleaf-sync` (or `status`) — has Overleaf moved ahead? Shows what changed. Read-only.
+- `/overleaf-sync pull` — fast-forward your mirror to the group's latest. Read-only w.r.t. Overleaf.
+- `/overleaf-sync diff` — show your unpublished edits (`local-edits` vs `master`).
+- `/overleaf-sync publish` — push your edits back. This is the one dangerous action:
+  it requires an explicit, in-the-moment confirmation, merges collaborators' work
+  first, stops on any conflict, and re-disables push afterwards.
+
+In CLAUDE.md, record that `Overleaf/main.tex` is the authoritative master and your
+`workbook.tex`/`brief.tex` are local working documents — so Claude knows agreed
+results graduate *into* the Overleaf, not the other way round.
 
 ---
 
@@ -1431,37 +1499,51 @@ For a research project, constantly approving routine commands (compile, git stat
 run the computation script) is friction that adds up. The permissions block in
 `settings.json` lets you pre-approve what Claude can run.
 
-The most practical approach for research is **allow all Bash commands, deny the
-dangerous ones explicitly**:
+The most practical approach for research is **three tiers**: allow everything by
+default, *ask* before recoverable-but-risky commands, and *deny* the catastrophic
+ones outright. Precedence is `deny` > `ask` > `allow`, so a command listed under
+`ask` still prompts even though `allow` also matches it.
 
 ```json
 "permissions": {
   "allow": ["Bash"],
-  "deny": [
-    "Bash(rm -rf*)",
-    "Bash(rm -r*)",
-    "Bash(shred*)",
-    "Bash(dd if=*)",
-    "Bash(sudo*)",
-    "Bash(git clean*)",
+  "ask": [
+    "Bash(rm *)",
+    "Bash(rmdir *)",
     "Bash(git reset --hard*)",
+    "Bash(git clean*)",
     "Bash(git checkout --*)",
-    "Bash(git push --force*)",
     "Bash(git push -f*)",
+    "Bash(git push --force*)",
+    "Bash(chmod -R*)",
+    "Bash(mv *)",
+    "Bash(dd *)",
+    "Bash(truncate *)",
     "Bash(find* -delete*)",
-    "Bash(find* -exec rm*)",
-    "Bash(chmod -R 777*)",
+    "Bash(find* -exec rm*)"
+  ],
+  "deny": [
+    "Bash(sudo*)",
     "Bash(mkfs*)",
-    "Bash(fdisk*)"
+    "Bash(fdisk*)",
+    "Bash(shred*)"
   ]
 }
 ```
 
 `"allow": ["Bash"]` approves all shell commands by default — no more permission
-prompts for compiling LaTeX, running Python, or using git. The `deny` list blocks
-the commands you never want Claude to run: irreversible deletions, privilege
-escalation, and destructive git operations. Anything in `deny` takes precedence
-over `allow`.
+prompts for compiling LaTeX, running Python, or using git. The `ask` tier is the
+useful middle ground: commands like `rm`, `mv`, and `git reset --hard` are things
+you sometimes genuinely want, so instead of blocking them, Claude pauses and asks —
+you approve inline when you mean it, and nothing irreversible-ish happens by
+surprise. The `deny` tier is reserved for the truly catastrophic (privilege
+escalation, reformatting a disk) that should never run without you typing it yourself.
+
+> **Why an `ask` tier and not just `deny`?** An earlier version of this guide put
+> `rm` and `git reset --hard` in `deny`. That is safe but annoying: the moment you
+> legitimately need to delete a stray file, a hard `deny` forces you to edit
+> `settings.json` mid-session. `ask` keeps the safety net while letting you say
+> "yes, this one" in the moment.
 
 The starter package [`starter/.claude/settings.json`](starter/.claude/settings.json)
 uses exactly this configuration. Copy it rather than writing your own from scratch.
@@ -1679,7 +1761,7 @@ fills up. It may forget things said earlier in the same session, contradict a
 calculation done two hours ago, or fail to apply a constraint that was clearly
 stated at the start of the session.
 
-The condensed notes and session log patterns described in this guide mitigate this
+The brief.tex and session-log patterns described in this guide mitigate this
 significantly. But for very long or complex sessions, periodically re-state critical
 constraints ("to be clear, the convention is ξ(s) = π^{-s/2}Γ(s/2)ζ(s)") to keep
 Claude on track.
@@ -1810,10 +1892,11 @@ project root. It gives you everything you need in the right place, ready to fill
 starter/
 ├── CLAUDE.md                        ← fill in your project details
 ├── next-session-prompts.md          ← session continuity log
-├── workbook.tex                         ← LaTeX stub (overwrite with your own if you have one)
-├── brief.tex                    ← condensed notes stub (overwrite if you have one)
+├── workbook.tex                     ← LaTeX stub for the working record (overwrite if you have one)
+├── brief.tex                        ← condensed-reference stub (overwrite if you have one)
+├── .gitignore                       ← ignores Overleaf clone, LaTeX/Python artifacts
 └── .claude/
-    ├── settings.json                ← permissions + hooks
+    ├── settings.json                ← permissions (allow / ask / deny) + hooks
     ├── hooks/
     │   ├── pre-compact.sh           ← auto-save before context compression
     │   └── promise-checker.sh       ← Stop hook: catches "I'll remember" without a write
@@ -1823,7 +1906,8 @@ starter/
         ├── nb-to-wolfbook.md        ← /nb-to-wolfbook skill
         ├── verify-citation.md       ← /verify-citation skill
         ├── reality-check.md         ← /reality-check skill
-        └── cross-validate.md        ← /cross-validate skill
+        ├── cross-validate.md        ← /cross-validate skill
+        └── overleaf-sync.md         ← /overleaf-sync skill
 ```
 
 Copy the files, fill in `CLAUDE.md` with your project's details, and you are ready
@@ -1839,19 +1923,21 @@ in Part I.
 | [`starter/CLAUDE.md`](starter/CLAUDE.md) | Starting CLAUDE.md for any research project, with all sections and explanatory comments |
 | [`starter/next-session-prompts.md`](starter/next-session-prompts.md) | Session log template with format examples |
 | [`starter/workbook.tex`](starter/workbook.tex) | LaTeX stub for the working record: preamble, theorem environments, skeleton sections — the research journal where proofs, derivations, and discussions live |
-| [`starter/brief.tex`](starter/brief.tex) | Condensed notes stub with status tags (ESTABLISHED/CONJECTURED/OPEN) and cross-reference structure — fill in as results accumulate |
-| [`starter/.claude/settings.json`](starter/.claude/settings.json) | Annotated generic settings: permissions for research tools + hooks for pre-compact, dual-remote push, and promise-checker |
+| [`starter/brief.tex`](starter/brief.tex) | Condensed-reference stub with status tags (ESTABLISHED/CONJECTURED/OPEN) and cross-reference structure — fill in as results accumulate |
+| [`starter/.gitignore`](starter/.gitignore) | Ignore rules: Overleaf clone, LaTeX build artifacts, Python/Wolfram scratch, generated outputs |
+| [`starter/.claude/settings.json`](starter/.claude/settings.json) | Annotated generic settings: three-tier permissions (allow / ask / deny) + hooks for pre-compact, dual-remote push, and promise-checker |
 | [`starter/.claude/hooks/pre-compact.sh`](starter/.claude/hooks/pre-compact.sh) | Pre-compact hook: timestamps CLAUDE.md and snapshots the task log before context compression |
 | [`starter/.claude/skills/latex-compile.md`](starter/.claude/skills/latex-compile.md) | Skill: compile LaTeX, fix common errors, report result |
-| [`starter/.claude/skills/sync-condensed.md`](starter/.claude/skills/sync-condensed.md) | Skill: propagate load-bearing changes from main document to condensed notes |
+| [`starter/.claude/skills/sync-condensed.md`](starter/.claude/skills/sync-condensed.md) | Skill: propagate load-bearing changes from workbook.tex to brief.tex |
 | [`starter/.claude/skills/nb-to-wolfbook.md`](starter/.claude/skills/nb-to-wolfbook.md) | Skill: convert .nb notebooks and .m scripts to Wolfbook's .wb format |
 | [`starter/.claude/skills/verify-citation.md`](starter/.claude/skills/verify-citation.md) | Skill: verify a paper exists on Semantic Scholar / arXiv before writing it as a citation |
 | [`starter/.claude/skills/reality-check.md`](starter/.claude/skills/reality-check.md) | Skill: re-derive a contested result in isolation to detect sycophantic capitulation |
 | [`starter/.claude/skills/cross-validate.md`](starter/.claude/skills/cross-validate.md) | Skill: format a physics claim for cross-model validation against Gemini or ChatGPT |
+| [`starter/.claude/skills/overleaf-sync.md`](starter/.claude/skills/overleaf-sync.md) | Skill: sync a git clone of a shared Overleaf project — status/pull/diff, and a safe merge-only publish |
 | [`starter/.claude/hooks/promise-checker.sh`](starter/.claude/hooks/promise-checker.sh) | Stop hook: catches "I'll remember / I've saved" without a corresponding file write |
 | [`examples/CLAUDE-template.md`](examples/CLAUDE-template.md) | Heavily commented CLAUDE.md template with all sections; use as the base when filling in manually |
 | [`examples/next-session-prompts-template.md`](examples/next-session-prompts-template.md) | Session log template with worked examples of well-written task descriptions |
-| [`examples/condensed-notes-guide.md`](examples/condensed-notes-guide.md) | Detailed guide on what to include and exclude from the condensed notes document |
+| [`examples/condensed-notes-guide.md`](examples/condensed-notes-guide.md) | Detailed guide on what to include in and exclude from brief.tex |
 | [`scripts/git-push-both.sh`](scripts/git-push-both.sh) | Dual-remote push: push to GitHub (personal) and GitLab (institution) with separate identities |
 | [`scripts/readme-latex-check.sh`](scripts/readme-latex-check.sh) | Scan a README for LaTeX commands that GitHub's MathJax does not support |
 

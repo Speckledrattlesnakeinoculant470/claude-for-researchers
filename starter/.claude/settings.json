@@ -2,26 +2,34 @@
   "_comment": "Generic Claude Code settings for a research project. Copy to your project's .claude/settings.json and adapt.",
 
   "permissions": {
-    "_comment_allow": "Allow all Bash commands by default. The deny list below blocks the dangerous ones. This means Claude can compile LaTeX, run Python scripts, use git, install packages, and run any standard research tool without asking for permission each time.",
+    "_comment_precedence": "Three tiers. Precedence: deny > ask > allow. So a command matched by 'ask' prompts even though 'allow' also matches it, and a 'deny' command is blocked outright.",
+
+    "_comment_allow": "Allow all Bash commands by default — no prompt for ordinary work: compile LaTeX, run Python/wolframscript, git, install packages, any standard research tool.",
     "allow": ["Bash"],
 
-    "_comment_deny": "These commands are never allowed without explicit user instruction. 'deny' takes precedence over 'allow'.",
-    "deny": [
-      "Bash(rm -rf*)",
-      "Bash(rm -r*)",
-      "Bash(shred*)",
-      "Bash(dd if=*)",
-      "Bash(sudo*)",
-      "Bash(git clean*)",
+    "_comment_ask": "Recoverable-but-dangerous: PROMPT for confirmation instead of running silently. You can still approve inline when you really mean it (e.g. an intentional 'rm'), but nothing here happens by surprise. This is the safety tier that catches Claude before an irreversible-ish action.",
+    "ask": [
+      "Bash(rm *)",
+      "Bash(rmdir *)",
       "Bash(git reset --hard*)",
+      "Bash(git clean*)",
       "Bash(git checkout --*)",
-      "Bash(git push --force*)",
       "Bash(git push -f*)",
+      "Bash(git push --force*)",
+      "Bash(chmod -R*)",
+      "Bash(mv *)",
+      "Bash(dd *)",
+      "Bash(truncate *)",
       "Bash(find* -delete*)",
-      "Bash(find* -exec rm*)",
-      "Bash(chmod -R 777*)",
+      "Bash(find* -exec rm*)"
+    ],
+
+    "_comment_deny": "Catastrophic / system-destroying: never run without explicit user instruction. 'deny' overrides everything.",
+    "deny": [
+      "Bash(sudo*)",
       "Bash(mkfs*)",
-      "Bash(fdisk*)"
+      "Bash(fdisk*)",
+      "Bash(shred*)"
     ]
   },
 

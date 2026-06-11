@@ -91,6 +91,8 @@ script. Never include `generated/` content in workbook.tex without my explicit i
 - `/verify-citation` — verify a paper exists before writing it as a citation.
 - `/reality-check` — re-derive a contested result in isolation to detect sycophancy.
 - `/cross-validate` — format a physics claim for cross-model validation.
+- `/overleaf-sync` — sync the `Overleaf/` git clone of a shared paper: status/pull/diff/publish.
+  Only if you collaborate on Overleaf via its git remote. Remove this line otherwise.
 
 ## Writing style in workbook.tex (IMPORTANT)
 <!-- Tell Claude how detailed to be when writing in your main document.
