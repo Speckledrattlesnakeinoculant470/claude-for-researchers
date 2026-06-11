@@ -1,120 +1,73 @@
 ---
 name: sync-wb-nb
-description: Propagate changes made in a Wolfbook .wb notebook into the paired Mathematica .nb file, keeping them in sync. Use after editing or adding cells in any .wb. The .wb is authoritative; the .nb is the mirror kept for collaborators who use Mathematica desktop.
+description: "Propagate a change made in a Wolfbook .wb notebook into the paired .nb notebook so the two stay identical. Use immediately after every .wb edit."
 ---
+
 # sync-wb-nb
 
-Propagate a change made in a Wolfbook `.wb` notebook into the paired Mathematica `.nb`
-notebook, so the two stay identical in content. We edit and test in the `.wb` (via the
-Wolfbook MCP); the `.nb` is the mirror kept for collaborators who work in Mathematica.
+Propagate `.wb` edits into the paired `.nb` so the two stay identical. We edit/test in the
+`.wb` (Wolfbook MCP); the `.nb` is the mirror we cannot run. Direction is always
+`.wb` → `.nb` (the `.wb` is authoritative; `/nb-to-wolfbook` handles the initial reverse
+conversion).
 
 ## When to invoke
-After editing or adding cells in a `.wb`. Add a line to your CLAUDE.md like:
+**Always, immediately after editing or adding cells in any `.wb`.** Add to your CLAUDE.md:
 > Always run `/sync-wb-nb` immediately after editing or adding cells in any `.wb`.
 
-## Input
-`/sync-wb-nb path/to/file.wb` — syncs that file and its paired `.nb` (same basename,
-same directory). If no argument is given, ask the user which file to sync.
+## Method: run the committed helper script
 
-## Direction and source of truth
-`.wb` → `.nb`. The `.wb` is authoritative. Never sync the other way here
-(use `/nb-to-wolfbook` for the initial `.nb` → `.wb` conversion).
+All the logic (backup, box conversion, stability gate, unique-target assertions,
+post-write verification with automatic restore) lives in `sync-wb-nb.wls` in this skill's
+directory. One Bash call per operation:
 
-## Hard rules
-
-- **Back up the `.nb` first** (`cp` to `/tmp`). Abort and restore if any verification fails.
-- **Never splice raw text into the `.nb`.** Mathematica's `.nb` format maintains an internal
-  byte-offset cache; a plain text edit leaves it stale and corrupts the file. Always use the
-  Import → modify → Export round-trip via wolframscript (see Method below).
-- **Keep synced code cells pure code.** Mathematica's parser discards `(* … *)` comments when
-  converting code to boxes, so a code cell with a leading comment would silently lose it in
-  the `.nb`. Put explanatory notes in a *separate* comment-only cell or in the workbook,
-  not inline in a code cell that must round-trip.
-- **Read cell text from the `.wb` JSON, never retype it.** That guarantees the `.nb` gets
-  exactly the `.wb` content.
-- **Verify, don't trust.** After inserting, re-import the `.nb` and assert the new cell's
-  parsed expression `===` the `.wb` cell's parsed expression. Cell count must change by
-  exactly the number of cells added.
-
-## Method
-
-### 1. Identify what changed in the `.wb`
-
-Read the `.wb` JSON (it is plain text). Identify which cell(s) were added or edited.
-Get a stable anchor in the `.nb`: find the `ExpressionUUID` of the cell that should
-*precede* the new/edited cell. Search the `.nb` text for a distinctive substring of
-that preceding cell's code, then read its `ExpressionUUID->"…"`.
-
-> Note: a UUID appears twice in the raw `.nb` — once in the cell expression and once
-> in the trailing `(* Internal cache information *)` index. The Import'd Notebook
-> expression contains it once only. Anchor on the imported expression, not raw text.
-
-### 2. Insert (or replace) via wolframscript — Import → rule → Export
-
-```wolfram
-dir = "<absolute path to the directory containing the files>";
-nbfile = dir <> "<name>.nb";
-wbfile = dir <> "<name>.wb";
-
-wb = Import[wbfile, "RawJSON"];
-(* read the exact code text of the changed cell from the .wb JSON *)
-code = SelectFirst[wb["cells"],
-         StringContainsQ[#["value"], "<unique snippet from that cell>"] &]["value"];
-
-nb = Import[nbfile];
-nBefore = Count[nb, _Cell, Infinity];
-
-(* parse code text → Input boxes WITHOUT evaluating the definitions *)
-boxes = ToExpression[code, StandardForm,
-          Function[e, MakeBoxes[e, StandardForm], HoldAllComplete]];
-newCell = Cell[BoxData[boxes], "Input", ExpressionUUID -> CreateUUID[]];
-
-anchorUUID = "<ExpressionUUID of the preceding cell>";
-(* INSERT after the anchor: *)
-newnb = nb /. (c : Cell[___, ExpressionUUID -> anchorUUID, ___]) :>
-              Sequence[c, newCell];
-(* — or REPLACE an existing cell:
-   newnb = nb /. Cell[___, ExpressionUUID -> targetUUID, ___] :> newCell *)
-
-nAfter = Count[newnb, _Cell, Infinity];
-If[nAfter - nBefore =!= 1, Print["ABORT: delta=", nAfter - nBefore]; Exit[1]];
-Export[nbfile, newnb];
+```bash
+WLS=".claude/skills/sync-wb-nb/sync-wb-nb.wls"   # path from project root
+wolframscript -file "$WLS" stability "<snippet>"            # is the .wb cell box-stable?
+wolframscript -file "$WLS" replace   "<wbSnippet>" ["<nbOldSnippet>"]   # sync an edited cell
+wolframscript -file "$WLS" insert    "<wbSnippet>" "<nbAnchorSnippet>"  # sync a new cell
+wolframscript -file "$WLS" verify    "<snippet>"            # check a cell is in sync
 ```
 
-### 3. Verify
+- `<snippet>` selects the cell and **must be a single token** (a symbol name defined in the
+  cell, e.g. `"myFunction"`): in box structures `myFunc[x_` never matches — `myFunc`, `[`,
+  `x_` are separate strings.
+- `replace` takes a second snippet when the OLD `.nb` cell doesn't contain the new token
+  (e.g. new code introduces `newSymbol`; locate the old cell by one of its own existing tokens).
+- `insert` needs a snippet of the `.nb` cell the new cell goes AFTER.
+- Non-default notebook pair: append `<wbPath> <nbPath>` (absolute paths) as trailing args.
+  Set defaults in `sync-wb-nb.wls` (see the `defaultWb`/`defaultNb` variables at the top).
+- Exit 0 + `PASS: …` = success. Exit 1 + `FAIL: …` = nothing (or a restored backup) on disk.
 
-```wolfram
-nb = Import[nbfile];
-exprNb = ToExpression[
-   SelectFirst[Cases[nb, Cell[BoxData[b_], "Input", ___] :> b, Infinity],
-     StringContainsQ[ToString[#, InputForm], "<unique snippet>"] &],
-   StandardForm, HoldComplete];
-exprWb = ToExpression[code, StandardForm, HoldComplete];
-Print["match: ", exprNb === exprWb, "  valid: ", Head[nb] === Notebook];
-```
+Workflow per synced cell: `stability` → fix source if it fails → `replace`/`insert` →
+done (verification is built in). Report the PASS lines.
 
-Both must print `True`. If either prints `False`, restore the backup and investigate.
+## Hard rules (the script enforces #2–#5; you own #1)
 
-## Notes
+1. **Keep synced code cells pure code.** The code→boxes conversion discards `(* … *)`
+   comments, so a commented cell would differ between the two files. Notes go in a separate
+   text cell or the workbook.
+2. **Box-round-trip stability.** A fraction with a *product* numerator (`a*b/c`)
+   reassociates `Times` through `FractionBox` and breaks `===`; atomic-numerator fractions
+   are stable. Fix by assigning the numerator to a local (`c2 = a*b; … c2/c`), re-validate
+   the maths numerically, then sync. The script refuses to write unstable code.
+3. **Backup before write, restore on failed verification.** Automatic (`/tmp/sync-wb-nb-backup-*.nb`).
+4. **Unique-target assertion.** Ambiguous or missing snippet matches abort before writing.
+5. **Verify, don't trust**: after writing, the `.nb` cell must parse `===` the `.wb` code.
 
-- `HoldAllComplete` ensures definitions are parsed to `RowBox` input cells and never
-  evaluated during conversion. Multi-definition cells parse to `CompoundExpression`
-  and round-trip correctly.
-- Markdown cells (`kind: 1` in the `.wb`) map to `Cell[text, "Text"]` (or
-  `"Section"`/`"Subsection"`) in the `.nb`. Mirror the style of neighbouring text
-  cells in the existing `.nb`.
-- wolframscript requires absolute paths — quote them if the path contains spaces
-  or special characters.
-- If wolframscript is not available, tell the user: the sync cannot be automated
-  without a Mathematica licence. They will need to apply the change manually in
-  Mathematica desktop.
+## Why wolframscript (not Python)
 
-## Output
+Only the Wolfram kernel can convert code text to Input boxes (`MakeBoxes`) and parse `.nb`
+box structures back; a Python splice would also leave the `.nb`'s internal byte-offset
+cache stale. Import→modify→Export regenerates it correctly and preserves outputs.
 
-```
-Synced: <name>.wb → <name>.nb
-  Cells added: N (cell count: M → M+N)
-  Verification: match=True, valid=True
-```
+## Implementation notes (for maintaining the script)
 
-If verification fails, report which assertion failed and that the backup was restored.
+- Snippet matching uses `ToString[boxes, InputForm, PageWidth -> Infinity]` — default
+  `ToString` line-wraps and can split a token across a `\` continuation, silently breaking
+  `StringContainsQ`.
+- Cell replacement uses `Position`+`Select`(SameQ)+`ReplacePart`, never `nb /. oldCell ->
+  new`: a literal Cell as a `/.` LHS can silently fail to fire. UUID-anchored `/.` rules
+  are fine for *insertion* (the anchor cell is matched by its UUID option, not its body).
+- Markdown `.wb` cells (kind 1) are not handled by the script; mirror them manually as
+  `Cell[text, "Subsection"/"Text"]` matching neighbouring styles.
+- Quote the project path (spaces + parentheses); wolframscript needs absolute paths.

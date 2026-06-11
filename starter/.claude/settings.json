@@ -2,12 +2,12 @@
   "_comment": "Generic Claude Code settings for a research project. Copy to your project's .claude/settings.json and adapt.",
 
   "permissions": {
-    "_comment_precedence": "Precedence: deny > ask > allow. We never hard-BLOCK anything — every dangerous command is in 'ask' so Claude pauses and you approve (or refuse) in the moment. 'deny' is left empty by default; add a command there only if you want it blocked outright with no prompt.",
+    "_comment_precedence": "Precedence: deny > ask > allow.",
 
-    "_comment_allow": "Allow all Bash commands by default — no prompt for ordinary work: compile LaTeX, run Python/wolframscript, git, install packages, any standard research tool.",
-    "allow": ["Bash"],
+    "_comment_allow": "Allow all Bash commands by default — no prompt for ordinary work: compile LaTeX, run Python/wolframscript, git, install packages, any standard research tool. mcp__wolfbook = every tool of the Wolfbook MCP server (notebook read/edit/run). Remove mcp__wolfbook if you are not using Wolfbook.",
+    "allow": ["Bash", "mcp__wolfbook"],
 
-    "_comment_ask": "Dangerous-but-sometimes-wanted: PROMPT for confirmation instead of running silently. Nothing here is blocked — you can always approve inline when you really mean it (e.g. an intentional 'rm'). This is the safety net that catches Claude before an irreversible action without ever standing in your way.",
+    "_comment_ask": "Recoverable-but-dangerous: PROMPT for confirmation instead of running silently. You can always approve inline when you really mean it. This is the safety net that catches Claude before an irreversible action without ever standing in your way.",
     "ask": [
       "Bash(rm *)",
       "Bash(rmdir *)",
@@ -28,7 +28,7 @@
       "Bash(shred*)"
     ],
 
-    "_comment_deny": "Empty by default: nothing is hard-blocked. If you ever want a command refused outright with no prompt, add it here ('deny' overrides 'ask' and 'allow').",
+    "_comment_deny": "Empty by default — nothing is hard-blocked. Every dangerous command is in 'ask' so Claude pauses and you approve or refuse in the moment. Add commands here only if you want them refused outright with no prompt.",
     "deny": []
   },
 
