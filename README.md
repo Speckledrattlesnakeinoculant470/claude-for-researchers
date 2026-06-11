@@ -225,69 +225,81 @@ it would need to know. Cover:
 Do not worry about structure. Write it conversationally. The more you say, the
 better the generated CLAUDE.md will be.
 
-**Step 4 — Paste the first setup message.** This creates all the files without
-running any shell commands. No permission prompts will appear.
+**Step 4 — Paste the setup message.** One message does the whole setup. It is
+written to force Claude to *read your repo and your description* and generate real
+content — not to paste templates. The distinction in the prompt between "copy
+verbatim" and "generate from what I told you" is the part that matters; do not
+soften it.
 
 > I want to set up this project using the workflow at
-> https://github.com/Mexregkan/claude-for-researchers/. Do only the following —
-> create files, do not run any shell commands yet.
+> https://github.com/Mexregkan/claude-for-researchers/. First read that repo's
+> `starter/` directory and `examples/CLAUDE-template.md` so you know the exact
+> structure of every file. Then:
 >
-> 1. Create `.claude/settings.json` (use the starter package version from that repo).
-> 2. Create `.claude/hooks/pre-compact.sh` and `.claude/hooks/promise-checker.sh`
->    (use the starter package versions from that repo).
-> 3. Create `.claude/skills/` with the `latex-compile`, `sync-condensed`,
->    `nb-to-wolfbook`, `verify-citation`, `reality-check`, and `cross-validate` skills
->    (all in the starter package).
-> 4. Create `CLAUDE.md` populated with the project details I just described,
->    using `examples/CLAUDE-template.md` from that repo as the template.
->    Fill in the Conventions, File map, and Current status sections from what I told you.
-> 5. Copy `next-session-prompts.md` from the starter package into the project root.
-> 6. If `workbook.tex` does not already exist, copy `starter/workbook.tex` from that repo
->    as a stub. Do not overwrite an existing file.
-> 7. If `brief.tex` does not already exist, copy `starter/brief.tex` from
->    that repo as a stub. Do not overwrite an existing file.
->    Update the title and author fields in both stubs with the project details I described.
+> **Copy these verbatim** — they are generic infrastructure and need no edits:
+> - `.claude/settings.json` (from `starter/.claude/settings.json`)
+> - `.claude/hooks/pre-compact.sh` and `.claude/hooks/promise-checker.sh`
+> - `.claude/skills/`: `latex-compile`, `sync-condensed`, `nb-to-wolfbook`,
+>   `verify-citation`, `reality-check`, `cross-validate`
 >
-> When all files are created, stop and tell me "Files ready — please restart Claude Code."
-
-**Step 5 — Restart Claude Code.** Close the chat panel and reopen it (or close
-and reopen VS Code entirely). This loads the new `settings.json`, which grants
-permission for all shell commands from this point on.
-
-**Step 6 — Paste the second setup message.** Now Claude can run shell commands
-without any prompts.
-
-> Please complete the project setup:
+> **Generate these from what I told you at the start of this session.** Use the
+> starter files ONLY as the structural template — preamble, macros, section
+> layout, comment style. Fill every section with the actual content of THIS
+> project. Do not leave a single `[placeholder]` or `[e.g., ...]` line anywhere.
+> Where you genuinely do not have the information, ask me — do not invent it.
+> - `CLAUDE.md` — based on `examples/CLAUDE-template.md`. Fill in Goal, Files,
+>   Conventions, Current status, my real git remotes, my notation, and my
+>   numerics setup, all from what I described.
+> - `workbook.tex` — keep the starter's preamble and theorem environments, set
+>   the real title and author, write a real introduction and a real conventions
+>   section from my description, and make sections for the actual topics of this
+>   project. Short is fine; generic is not — it must be about MY project.
+> - `brief.tex` — keep the starter's structure and colour macros, then write the
+>   real current state: what is established, conjectured, and open, plus the key
+>   conventions, from my description.
+> - `next-session-prompts.md` — keep the starter's structure, then write a real
+>   first task at the top: the concrete next step for this project.
 >
-> 1. Install rtk if not already installed (`brew install rtk && rtk init -g --auto-patch`).
-> 2. Install the Anthropic pdf skill:
->    ```
->    curl -o .claude/skills/pdf.md \
->      https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/SKILL.md
->    ```
-> 3. Install the Wolfbook VS Code extension (`code --install-extension wolfbook.wolfbook`).
-> 4. Initialise a git repo if one does not exist (`git init`).
+> If `workbook.tex`, `brief.tex`, or any target file already exists, do NOT
+> overwrite it — tell me and stop.
+>
+> Create all of the above with the Write tool. Then run these install commands —
+> I will approve the few one-time permission prompts they trigger:
+> - `brew install rtk && rtk init -g --auto-patch`
+> - `curl -o .claude/skills/pdf.md https://raw.githubusercontent.com/anthropics/skills/main/skills/pdf/SKILL.md`
+> - `code --install-extension wolfbook.wolfbook`
+> - `git init` (only if this is not already a git repo)
 
-**Step 7 — Review what Claude produced.** Read through the generated `CLAUDE.md`
-carefully. The structure, hooks, and settings will be correct by construction. The
-parts that need your attention are the domain-specific sections — Conventions and
-Current status — because those require your knowledge to get right. Correct anything
-Claude misunderstood about your project, and you are ready to begin.
+**Step 5 — Approve the one-time install prompts.** Claude writes all the files
+silently, then runs the four install commands. Those few commands will ask for
+permission *in this first session only* (see the note below). Approve them.
+
+**Step 6 — Review what Claude produced.** Read the generated `CLAUDE.md`,
+`workbook.tex`, and `brief.tex`. The infrastructure (settings, hooks, skills) is
+correct by construction. The parts that need your eyes are the domain-specific
+ones — Conventions, Current status, the introduction — because those depend on
+your knowledge. If Claude left anything generic or got a convention wrong, fix it
+now, and you are ready to begin.
 
 **If you have existing Mathematica notebooks or scripts**, run `/nb-to-wolfbook` on
 them after setup is complete. Point it at a file or a whole directory and it will
 convert everything to Wolfbook's `.wb` format in one step — re-run the cells
 afterwards to regenerate output.
 
-The restart between the two messages is necessary because Claude Code loads
-`settings.json` once at session start. Without it, the shell commands in the second
-message would trigger permission prompts. With it, they run silently. The restart
-takes ten seconds and only happens once per project.
+**Why the install commands prompt (once).** The `settings.json` Claude just wrote
+allows every shell command except a denylist of destructive ones — `rm -rf`,
+`git reset --hard`, force-push, and so on. That is the behaviour you want: Claude
+runs LaTeX, Python, and git without interrupting you, and only pauses before
+something dangerous. But Claude Code reads `settings.json` once, at session start,
+so it does not take effect until your *next* session. That is why the four install
+commands in this very first session ask for permission. Approve them; from the
+next session on, nothing routine will prompt you again.
 
 This works because Claude Code can read a GitHub repository, run shell commands, and
-create files, and because the guide it is reading contains explicit templates and
-instructions it can follow directly. The setup task is exactly the kind of structured,
-mechanical work Claude does reliably. The research that follows is yours.
+write files, and because the guide it is reading contains explicit templates and
+instructions. Filling those templates with your project — turning a description into
+a working `CLAUDE.md`, `workbook.tex`, and `brief.tex` — is exactly the kind of
+structured work Claude does reliably. The research that follows is yours.
 
 ---
 
