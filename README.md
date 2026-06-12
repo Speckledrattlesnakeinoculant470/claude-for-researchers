@@ -1494,6 +1494,13 @@ each session, or add a standing instruction to CLAUDE.md so Claude runs it
 automatically. Your collaborators open the `.nb` in Mathematica as usual; you work
 entirely in Wolfbook. The two files stay identical in content.
 
+The same skill also has a `regenerate` mode that rebuilds a whole `.nb` from a `.wb`
+in one step — with proper syntax colouring and section headings, so the file opens
+in Mathematica looking like a normal notebook rather than walls of black text. Use
+it when you create a new notebook (or rewrite one wholesale) rather than editing
+cell by cell; the cell-by-cell mode remains the right tool for hand-crafted
+notebooks whose outputs you want to preserve.
+
 **Plain `.m` script files** (not notebooks) work well for computation scripts that
 Claude runs or modifies. Claude reads and edits `.m` files the same as Python
 scripts — no special handling needed.
