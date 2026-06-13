@@ -1053,6 +1053,32 @@ glance at them:
 Together they turn "is this session getting too big?" from a guess into something you
 can see, which is what tells you when to reach for compaction or a fresh session below.
 
+**A rule of thumb for when to act.** There is no magic number, but a workable habit:
+
+- **Around 50% full**, glance at `/context` — not to act, but as a reminder to write
+  anything load-bearing from the conversation into `workbook.tex`/`brief.tex` while the
+  detail is still there.
+- **By around 70%**, do something: either `/compact` if you are mid-task and need to
+  keep going, or — better for research — wrap the current sub-task and start a fresh
+  session. Quality degrades *well before* the window is full, because every turn the
+  model re-reads everything accumulated and your real signal gets diluted.
+- **Do not wait for auto-compaction.** It only fires when the window is nearly full, by
+  which point you have already been working in the degraded zone. It is a safety net,
+  not a target.
+
+Two things matter more than the percentage. First, **for research, prefer a fresh
+session over repeated compaction.** Compaction keeps only a lossy *summary* of the
+conversation, and a subtle derivation is exactly where that summary loses the nuance.
+At a natural stopping point it is better to write the next prompt into
+`next-session-prompts.md`, start a new session, and let Claude re-load clean, high-signal
+context from `brief.tex` — a fresh session seeded from your own curated documents beats a
+70%-full compacted one almost every time. Reserve `/compact` for "I am in the middle of
+one thing and do not want to break stride." Second, **watch *what* is filling the window,
+not just the number**: 70% that is mostly one large PDF or stale command output you no
+longer need is very different from 70% of dense active reasoning. `/context` shows you
+which, so the percentage is really a trigger to *look*, and the breakdown tells you
+whether to clear-and-reload or to write results out and start fresh.
+
 ### Compaction and auto-compaction
 
 **What compaction is:** when Claude Code detects that the context window is getting
