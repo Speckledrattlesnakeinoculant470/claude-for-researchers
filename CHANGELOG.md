@@ -33,6 +33,9 @@ First tagged release of the current structure. Everything below landed this mont
   a shared Overleaf project from its git remote.
 - **AI-output staging**: `numerics/generated/` and `figures/generated/` folders for
   Claude-produced outputs pending your review.
+- **Context-monitoring note** in the session-length section: the read-only `/context`
+  (what's filling the window) and `/usage` (where tokens/cost go) commands, so you can
+  see when to compact or start fresh instead of guessing.
 
 ### Changed
 - **`latex-compile`** rewritten: compiles with `pdflatex` and captures stdout

@@ -1028,6 +1028,24 @@ lines of **"context window full"** or **"API context token limit reached"**. Thi
 is not a bug or a network problem — it means the session has accumulated more than
 the model can hold at once. The fix is to start a new session.
 
+### Seeing how full the window is
+
+You do not have to guess. Two built-in commands show you, and both are read-only —
+they report information and never change your work, so there is no reason not to
+glance at them:
+
+- **`/context`** draws a coloured map of what is currently filling the context
+  window — file reads, tool outputs, the conversation itself — and warns you as you
+  approach capacity. Use it when a session starts to feel long: it tells you
+  *whether* you actually need to act and *what* is taking up the room (often a single
+  large file read, or a chatty command you could have routed through rtk).
+- **`/usage`** (also `/cost`) shows the session's token cost and where it is going,
+  broken down by skill, sub-agent, and tool. It is the honest scoreboard for whether
+  the token-saving machinery — rtk, distill, condensed notes — is actually paying off.
+
+Together they turn "is this session getting too big?" from a guess into something you
+can see, which is what tells you when to reach for compaction or a fresh session below.
+
 ### Compaction and auto-compaction
 
 **What compaction is:** when Claude Code detects that the context window is getting
